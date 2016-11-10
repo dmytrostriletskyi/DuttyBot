@@ -18,7 +18,43 @@ import config
 sched = BlockingScheduler()
 
 
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=22, minute=1)
+def dateApp():
+	db_info = dj_database_url.config(default=config.DBSRC)
 
+	connection = psycopg2.connect(
+	   database=db_info.get('NAME'),
+	   user=db_info.get('USER'),
+	   password=db_info.get('PASSWORD'),
+	   host=db_info.get('HOST'),
+	   port=db_info.get('PORT'))
+
+	cursor = connection.cursor()
+
+	cursor.execute("DROP TABLE IF EXISTS dateapp") 
+	cursor.execute("CREATE TABLE IF NOT EXISTS dateapp (id serial primary key, datefirst text, datesecond text, daytoweek text);")
+	
+
+	native = datetime.datetime.now()
+
+	firstDay = native + datetime.timedelta(hours = 2) 
+	lastDay = firstDay + datetime.timedelta(days = 1) 
+
+	dayToWeek = native + datetime.timedelta(hours = 2) 
+	dayToWeek = str(dayToWeek.weekday())
+
+	firstDay = firstDay.strftime("%d.%m")
+	lastDay = lastDay.strftime("%d.%m")
+
+
+	cursor.execute("INSERT INTO dateapp (datefirst, datesecond, daytoweek) VALUES (%s, %s, %s)", (firstDay, lastDay, dayToWeek))
+	connection.commit()
+	connection.close()
+
+
+
+
+	
 
 @sched.scheduled_job('cron', day_of_week=2, hour=19, minute=36)
 def createTable():

@@ -146,43 +146,47 @@ def getSelectedGroup(message):
 	basicMarkupRows.markRowChooseDate(message)
 
 	
-@bot.message_handler(func=lambda mess: "На сегодня ({0})".format(schedule.firstDay) == mess.text or \
-										"На завтра ({0})".format(schedule.lastDay) == mess.text or \
+
+# day[1] - today, day[2] - tomorrow, day[3] - week day`s index
+day = selectData.selectDates()
+@bot.message_handler(func=lambda mess: "На сегодня ({0})".format(day[1]) == mess.text or \
+										"На завтра ({0})".format(day[2]) == mess.text or \
 										"Вернуться в главное меню" == mess.text or \
 										"Время пар" == mess.text or \
 										"Обновления" == mess.text or \
 										"Обратная связь" == mess.text, content_types=['text'])
 def lastMenu(message):
-	lastGroup = middleware.summaryVerification(str(message.chat.id))
+	lastGroup = middlewareUserData.summaryVerification(str(message.chat.id))
 	print ('Selected group:', lastGroup)
+
 
 	bot.send_message(message.chat.id, 'Убедительная просьба, по причине надвигающейся проверки, увеличить посещаемость до 15.11.2016 включительно. Спасибо!\n')
 
 
-	if message.text == "На сегодня ({0})".format(schedule.firstDay):
-		middleware.updateChoice('schedule', str(message.chat.id))
+	if message.text == "На сегодня ({0})".format(day[1]):
+		middlewareUserData.updateChoice('schedule', str(message.chat.id))
 
-		if schedule.dayToWeek == 5:
+		if day[3] == 5:
 			bot.send_message(message.chat.id, 'Расписание обновляется и недоступно до воскресенья!')
 
-		if schedule.dayToWeek == 6:
+		if day[3] == 6:
 			bot.send_message(message.chat.id, 'Расписание доступно только на завтрашний день!')
 		
 		else:
-			message.text = printController.printController(lastGroup, schedule.firstDay)
+			message.text = printController.show(lastGroup, day[1])
 			bot.send_message(message.chat.id, message.text)
 
 
-	if message.text == "На завтра ({0})".format(schedule.lastDay):
-		middleware.updateChoice('schedule', str(message.chat.id))
+	if message.text == "На завтра ({0})".format(day[2]):
+		middlewareUserData.updateChoice('schedule', str(message.chat.id))
 
-		if schedule.dayToWeek == 4:
+		if day[3] == 4:
 			bot.send_message(message.chat.id, 'Получить расписание можно с воскресенья!')
 
-		if schedule.dayToWeek == 5:
+		if day[3] == 5:
 			bot.send_message(message.chat.id, 'Расписание обновляется и недоступно до воскресенья!')
 
-		message.text = printController.printController(lastGroup, schedule.lastDay)
+		message.text = printController.show(lastGroup, day[2])
 		bot.send_message(message.chat.id, message.text)
 
 
@@ -222,10 +226,10 @@ def handle_text(message):
 	if emptyCount == 1:
 		backButton.cancelOperation(str(message.chat.id), 1)
 
-		fucAndCourse = middleware.getFacultyAndGroup(str(message.chat.id))
+		fucAndCourse = middlewareUserData.getFacultyAndGroup(str(message.chat.id))
 		print ('1: ', fucAndCourse[0], fucAndCourse[1])
 
-		groupList = dbo.selectGroups(fucAndCourse[0], fucAndCourse[1])
+		groupList = selectData.selectGroup(fucAndCourse[0], fucAndCourse[1])
 		print ('2:', groupList)
 
 		basicMarkupRows.markRowGroupList(groupList, message)
@@ -234,10 +238,10 @@ def handle_text(message):
 	if emptyCount == 0:
 		backButton.cancelOperation(str(message.chat.id), 0)
 
-		fucAndCourse = middleware.getFacultyAndGroup(str(message.chat.id))
+		fucAndCourse = middlewareUserData.getFacultyAndGroup(str(message.chat.id))
 		print ('11: ', fucAndCourse[0], fucAndCourse[1])
 
-		groupList = dbo.selectGroups(fucAndCourse[0], fucAndCourse[1])
+		groupList = selectData.selectGroup(fucAndCourse[0], fucAndCourse[1])
 		print ('22:', groupList)
 
 		basicMarkupRows.markRowGroupList(groupList, message)
@@ -256,6 +260,3 @@ def webhook():
     return "CONNECTED", 200
 
 server.run(host="0.0.0.0", port=os.environ.get('PORT', 5000))
-
-
-

@@ -1,7 +1,9 @@
 import telebot
-import dateOperations as schedule
 import dataLib
+import dataBaseSelections 
 
+selectData = dataBaseSelections.dataBaseSelections()
+day = selectData.selectDates()
 
 class basicMarkupRows():
 	def __init__(self, bot):
@@ -52,7 +54,7 @@ class basicMarkupRows():
 		self.message = message
 
 		date_markup = telebot.types.ReplyKeyboardMarkup(True, False)
-		date_markup.row("На сегодня ({0})".format(schedule.firstDay), "На завтра ({0})".format(schedule.lastDay))
+		date_markup.row("На сегодня ({0})".format(day[1]), "На завтра ({0})".format(day[2]))
 		date_markup.row('Время пар', 'Вернуться назад')
 		date_markup.row('Вернуться в главное меню')
 		date_markup.row('Обратная связь', 'Обновления')

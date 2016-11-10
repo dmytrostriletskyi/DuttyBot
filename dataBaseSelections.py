@@ -55,3 +55,11 @@ class dataBaseSelections():
 		return len(emptyList)
 
 
+	def selectDates(self):
+		self.cursor.execute("SELECT * FROM dateapp")
+		
+		dates = []
+		for day in self.cursor.fetchone():
+			dates.append(day)
+
+		return dates
