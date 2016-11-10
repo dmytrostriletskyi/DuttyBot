@@ -20,6 +20,7 @@ sched = BlockingScheduler()
 
 @sched.scheduled_job('cron', day_of_week='mon-sun', hour=22, minute=1)
 def dateApp():
+	print ('Date app running!')
 	db_info = dj_database_url.config(default=config.DBSRC)
 
 	connection = psycopg2.connect(
@@ -56,9 +57,9 @@ def dateApp():
 
 	
 
-@sched.scheduled_job('cron', day_of_week=2, hour=19, minute=36)
+@sched.scheduled_job('cron', day_of_week=5, hour=3, minute=00)
 def createTable():
-	print ('keqe')
+	print ('Create table running!')
 	db_info = dj_database_url.config(default=config.DBSRC)
 
 	connection = psycopg2.connect(
@@ -70,18 +71,18 @@ def createTable():
 
 	cursor = connection.cursor()
 
-	cursor.execute("DROP TABLE IF EXISTS table") 
-	cursor.execute("CREATE TABLE IF NOT EXISTS table (id serial primary key, faculty char(29), course char(1), groupa text, dateFirst char(5), schedule text);")
+	cursor.execute("DROP TABLE IF EXISTS timetable") 
+	cursor.execute("CREATE TABLE IF NOT EXISTS timetable (id serial primary key, faculty char(29), course char(1), groupa text, dateFirst char(5), schedule text);")
 	connection.commit()
 
 
-	for i in range(1, 9):
+	for i in range(1, 2):
 
 		i *= 7
 		base = 6
 
 		nativeDay = datetime.datetime.now()
-		firstDay = nativeDay + datetime.timedelta(i - 2) 
+		firstDay = nativeDay + datetime.timedelta(i - 5) 
 		lastDay = firstDay + datetime.timedelta(base) 
 		firstDay = firstDay.strftime("%d.%m.%Y")
 		lastDay = lastDay.strftime("%d.%m.%Y")
@@ -92,7 +93,7 @@ def createTable():
 		for formData in dataLib.dateToDateForm(firstDay, lastDay):
 			r = requests.post(config.url, data = formData)
 			soup = BeautifulSoup(r.text, 'html.parser')
-			dataProcessing.dataProcessing(soup)
+			dataProcessing.dataProcessing(soup) 
 		
 
 	connection.commit()
