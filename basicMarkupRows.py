@@ -16,6 +16,7 @@ class basicMarkupRows():
 
 		user_markup = telebot.types.ReplyKeyboardMarkup(True, False)
 		user_markup.row("Получить расписание")
+		user_markup.row("Получить расписание по подписке")
 		user_markup.row("Время пар")
 		user_markup.row('Обновления', 'Обратная связь')
 		self.bot.send_message(message.from_user.id, 'Выберите пункт меню:', reply_markup=user_markup)
@@ -56,6 +57,7 @@ class basicMarkupRows():
 		date_markup = telebot.types.ReplyKeyboardMarkup(True, False)
 		date_markup.row("На сегодня ({0})".format(day[1]), "На завтра ({0})".format(day[2]))
 		date_markup.row('Время пар', 'Вернуться назад')
+		date_markup.row('Подписаться на эту группу')
 		date_markup.row('Вернуться в главное меню')
 		date_markup.row('Обратная связь', 'Обновления')
 

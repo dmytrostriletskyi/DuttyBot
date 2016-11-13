@@ -21,6 +21,7 @@ import middlewareUserData
 import basicMarkupRows
 import backButton
 
+import botMessageHandlerSubscribe
 
 bot = telebot.TeleBot(config.TOKEN)
 
@@ -78,6 +79,8 @@ def handle_text(message):
 	print ('Insert user`s data:', message.chat.first_name, message.chat.last_name, message.chat.id, message.chat.username)
 
 
+
+botMessageHandlerSubscribe.botMessageHandlerSubscribe(bot, middleware, selectData, printController)
 
 
 
@@ -154,9 +157,10 @@ day = selectData.selectDates()
 										"Вернуться в главное меню" == mess.text or \
 										"Время пар" == mess.text or \
 										"Обновления" == mess.text or \
+										"Подписаться на эту группу" in mess.text or \
 										"Обратная связь" == mess.text, content_types=['text'])
 def lastMenu(message):
-	lastGroup = middlewareUserData.summaryVerification(str(message.chat.id))
+	lastGroup = middleware.summaryVerification(str(message.chat.id))
 	print ('Selected group:', lastGroup)
 
 
@@ -164,7 +168,7 @@ def lastMenu(message):
 
 
 	if message.text == "На сегодня ({0})".format(day[1]):
-		middlewareUserData.updateChoice('schedule', str(message.chat.id))
+		middleware.updateChoice('schedule', str(message.chat.id))
 
 		if day[3] == 5:
 			bot.send_message(message.chat.id, 'Расписание обновляется и недоступно до воскресенья!')
@@ -178,7 +182,7 @@ def lastMenu(message):
 
 
 	if message.text == "На завтра ({0})".format(day[2]):
-		middlewareUserData.updateChoice('schedule', str(message.chat.id))
+		middleware.updateChoice('schedule', str(message.chat.id))
 
 		if day[3] == 4:
 			bot.send_message(message.chat.id, 'Получить расписание можно с воскресенья!')
@@ -189,6 +193,12 @@ def lastMenu(message):
 		message.text = printController.show(lastGroup, day[2])
 		bot.send_message(message.chat.id, message.text)
 
+	if message.text == "Подписаться на эту группу":
+		middleware.otherFeature(message.chat.first_name, message.chat.last_name, message.chat.id, 'subscribe', message.chat.username)
+		middlewareUserData.subscribe(message.chat.first_name, message.chat.last_name, message.chat.id, lastGroup, message.chat.username)
+
+		message.text = 'Вы подписались на группу {0}.'.format(lastGroup)
+		bot.send_message(message.chat.id, message.text)
 
 @bot.message_handler(func=lambda mess: "Вернуться назад" == mess.text, content_types=['text'])
 def handle_text(message):
@@ -226,7 +236,7 @@ def handle_text(message):
 	if emptyCount == 1:
 		backButton.cancelOperation(str(message.chat.id), 1)
 
-		fucAndCourse = middlewareUserData.getFacultyAndGroup(str(message.chat.id))
+		fucAndCourse = middleware.getFacultyAndGroup(str(message.chat.id))
 		print ('1: ', fucAndCourse[0], fucAndCourse[1])
 
 		groupList = selectData.selectGroup(fucAndCourse[0], fucAndCourse[1])
@@ -238,7 +248,7 @@ def handle_text(message):
 	if emptyCount == 0:
 		backButton.cancelOperation(str(message.chat.id), 0)
 
-		fucAndCourse = middlewareUserData.getFacultyAndGroup(str(message.chat.id))
+		fucAndCourse = middleware.getFacultyAndGroup(str(message.chat.id))
 		print ('11: ', fucAndCourse[0], fucAndCourse[1])
 
 		groupList = selectData.selectGroup(fucAndCourse[0], fucAndCourse[1])

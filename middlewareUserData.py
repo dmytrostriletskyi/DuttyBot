@@ -94,3 +94,13 @@ class middlewareUserData():
 
 		self.cursor.execute("INSERT INTO statistic (firstname, lastname, faculty, chatid, course, groupa, choice, username) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (self.firstname, self.lastname, 'empty', self.chatid, 'empty', 'empty', self.choice, self.username))
 		self.connection.commit()
+
+	def subscribe(self, firstname, lastname, chatid, group, username):
+		self.firstname = firstname
+		self.lastname = lastname
+		self.chatid = chatid
+		self.username = username
+		self.group = group
+
+		self.cursor.execute("INSERT INTO subscribers (firstname, lastname, chatid, groupa, username) VALUES (%s, %s, %s, %s, %s)", (self.firstname, self.lastname, self.chatid, self.group, self.username))
+		self.connection.commit()

@@ -63,3 +63,20 @@ class dataBaseSelections():
 			dates.append(day)
 
 		return dates
+
+	def selectSubscribe(self, chatid):
+		self.chatid = chatid
+
+		self.cursor.execute("SELECT * FROM subscribers WHERE id IN (SELECT max(id) FROM subscribers WHERE chatid = (%s))", (self.chatid, ))
+
+
+		try:
+			subscribedGroup = self.cursor.fetchone()[4]
+		except TypeError:
+			subscribedGroup = "Вы не подписаны ни на одну группу."
+
+		print ('selectSubscribe:', subscribedGroup)
+		print ('selectSubscribe:', type(subscribedGroup))
+
+		
+		return subscribedGroup
