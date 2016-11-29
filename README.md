@@ -13,7 +13,7 @@ If you are following PC, use [link](http://telegram.me/duttybot).
 ## Interface and functions
 * Main menu:
 
-![mainmenu](http://s017.radikal.ru/i442/1611/9b/f45a2874a67e.png "mainmenu")
+![mainmenu](http://s018.radikal.ru/i516/1611/ea/afda255afa2c.png "mainmenu")
 
 * Choose a faculty:
 
@@ -29,4 +29,4 @@ If you are following PC, use [link](http://telegram.me/duttybot).
 
 * Take some schedule, that you want:
 
-![schedule](http://s019.radikal.ru/i644/1611/b8/31a1d61d9265.png "schedule")
+![schedule](http://s017.radikal.ru/i409/1611/62/7acb5b555a06.png "schedule")
