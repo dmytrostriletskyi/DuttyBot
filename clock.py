@@ -75,18 +75,17 @@ def createTable():
 	cursor.execute("CREATE TABLE IF NOT EXISTS timetable (id serial primary key, faculty char(29), course char(1), groupa text, dateFirst char(5), schedule text);")
 	connection.commit()
 
+		for i in range(1):
 
-	for i in range(1, 2):
+		nativeDay = datetime.datetime.now() + datetime.timedelta() 
+		weekday = datetime.datetime.today().weekday()
 
-		i *= 7
-		base = 6
+		firstDay = nativeDay + datetime.timedelta(i * 7 - weekday) 
+		lastDay = firstDay + datetime.timedelta(6) 
 
-		nativeDay = datetime.datetime.now()
-		firstDay = nativeDay + datetime.timedelta(i - 5) 
-		lastDay = firstDay + datetime.timedelta(base) 
 		firstDay = firstDay.strftime("%d.%m.%Y")
 		lastDay = lastDay.strftime("%d.%m.%Y")
-
+		
 		print(firstDay)
 		print(lastDay)
 		
