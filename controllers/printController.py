@@ -13,6 +13,10 @@ def trimSchedule(n, schedule):
 
 
 def printConroller(groupDB, dateDB):
+	try:
+		scheduleSelect = selectData.selectSchedule(groupDB, dateDB)
+	except:
+		return 'Расписание обновляется и пока что недоступно, повторите запрос через пять минут.'
 
 	try:
 		scheduleSelect = selectData.selectSchedule(groupDB, dateDB)
