@@ -1,6 +1,6 @@
-# <p align="center">DUT BOT
+# <p align="center">DUTTY BOT
 
-<p align="center">![dutbotlogo](http://www.dut.edu.ua/uploads/n_3680_18367509.png "dutbotlogo")
+<p align="center">![dutbotlogo](http://s018.radikal.ru/i510/1612/d1/e16d2959580d.png "dutbotlogo")
 
 ## Getting started
 
