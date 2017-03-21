@@ -91,4 +91,4 @@ ENV/
 # Rope project settings
 .ropeproject
 
-.idea/
+.idea/additional_data.py
