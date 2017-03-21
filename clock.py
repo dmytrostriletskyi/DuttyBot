@@ -1,137 +1,52 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
-from bs4 import BeautifulSoup
-
-import dj_database_url
-import requests
-import psycopg2
-
+from requests_to_schedule import parsing_timetable
+from rutetider import Timetable, CurrentDates
+from additional_data import database_url
 import datetime
-
-import utils.dataProcessing as dataProcessing
-import dataLib 
-import config 
 
 
 sched = BlockingScheduler()
 
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=22)
-def dateApp():
-	print ('Date app running!')
-	db_info = dj_database_url.config(default=config.DBSRC)
 
-	connection = psycopg2.connect(
-	   database=db_info.get('NAME'),
-	   user=db_info.get('USER'),
-	   password=db_info.get('PASSWORD'),
-	   host=db_info.get('HOST'),
-	   port=db_info.get('PORT'))
-
-	cursor = connection.cursor()
-	cursor.execute("INSERT INTO dateapp (done) VALUES (%s)", ('done', ))
-	
-	connection.commit()
-	connection.close()
+def weekdays_delete():
+    Timetable(database_url).clear_timetable()
 
 
-@sched.scheduled_job('cron', day_of_week='mon-fri', hour=22, minute=1)
-def createTable():
-	print ('Create everyday shedule!')
-	db_info = dj_database_url.config(default=config.DBSRC)
-
-	connection = psycopg2.connect(
-	   database=db_info.get('NAME'),
-	   user=db_info.get('USER'),
-	   password=db_info.get('PASSWORD'),
-	   host=db_info.get('HOST'),
-	   port=db_info.get('PORT'))
-
-	cursor = connection.cursor()
-
-	cursor.execute("DELETE FROM timetable") 
-	connection.commit()
-
-	
-	nativeDay = datetime.datetime.now() + datetime.timedelta() 
-	weekday = datetime.datetime.today().weekday()
-
-	firstDay = nativeDay + datetime.timedelta(-weekday) 
-	lastDay = firstDay + datetime.timedelta(6) 
-
-	firstDay = firstDay.strftime("%d.%m.%Y")
-	lastDay = lastDay.strftime("%d.%m.%Y")
+def everyday_dates_refreshing():
+    today = datetime.datetime.today().strftime('%d.%m.%Y')
+    tomorrow = (datetime.datetime.today() + datetime.timedelta(1)).strftime('%d.%m.%Y')
+    CurrentDates(database_url).add_dates(today, tomorrow)
 
 
-	print(firstDay)
-	print(lastDay)
-		
-	for formData in dataLib.dateToDateForm(firstDay, lastDay):
-		r = requests.post(config.url, data = formData)
-		soup = BeautifulSoup(r.text, 'html.parser')
-		dataProcessing.dataProcessing(soup) 
-		
-	connection.commit()
-	connection.close()
+def weekdays():
+    native_day = datetime.datetime.now() + datetime.timedelta()
+    weekday = datetime.datetime.today().weekday()
+
+    first_day = native_day + datetime.timedelta(-weekday)
+    last_day = first_day + datetime.timedelta(6)
+
+    parsing_timetable(first_day.strftime("%d.%m.%Y"), last_day.strftime("%d.%m.%Y"))
 
 
-@sched.scheduled_job('cron', day_of_week=5, hour=22, minute=1)
-def createTable():
-	print ('Create shedule from monday to friday next weak as sunday 00:01 parser!')
-	db_info = dj_database_url.config(default=config.DBSRC)
+def weekend_delete():
+    Timetable(database_url).clear_timetable()
 
-	connection = psycopg2.connect(
-	   database=db_info.get('NAME'),
-	   user=db_info.get('USER'),
-	   password=db_info.get('PASSWORD'),
-	   host=db_info.get('HOST'),
-	   port=db_info.get('PORT'))
 
-	cursor = connection.cursor()
+def weekend():
+    native_day = datetime.datetime.now() + datetime.timedelta()
+    weekday = datetime.datetime.today().weekday()
 
-	cursor.execute("DELETE FROM timetable") 
-	connection.commit()
+    first_day = native_day + datetime.timedelta(-weekday)
+    last_day = first_day + datetime.timedelta(6)
 
-	
-	nativeDay = datetime.datetime.now() + datetime.timedelta() 
-	weekday = datetime.datetime.today().weekday()
+    parsing_timetable(first_day.strftime("%d.%m.%Y"), last_day.strftime("%d.%m.%Y"))
 
-	firstDay = nativeDay + datetime.timedelta(+2) 
-	lastDay = firstDay + datetime.timedelta(6) 
+sched.add_job(everyday_dates_refreshing, 'cron', day_of_week='mon-sun', hour=22)
 
-	firstDay = firstDay.strftime("%d.%m.%Y")
-	lastDay = lastDay.strftime("%d.%m.%Y")
+sched.add_job(weekdays_delete, 'cron', day_of_week='mon-thu', hour=22)
+sched.add_job(weekdays, 'cron', day_of_week='mon-thu', hour=22)
 
-	print(firstDay)
-	print(lastDay)
-		
-	for formData in dataLib.dateToDateForm(firstDay, lastDay):
-		r = requests.post(config.url, data = formData)
-		soup = BeautifulSoup(r.text, 'html.parser')
-		dataProcessing.dataProcessing(soup) 
-		
-
-	connection.commit()
-	connection.close()
-
+sched.add_job(weekend_delete, 'cron', day_of_week=5, hour=22)
+sched.add_job(weekend, 'cron', day_of_week=5, hour=22)
 
 sched.start()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

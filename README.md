@@ -1,6 +1,6 @@
-# <p align="center">DUTTY BOT
+# <p align="center">DUT BOT
 
-![duttybot](http://s019.radikal.ru/i612/1703/c1/94bb9375ae5c.png "duttybot")
+<p align="center">![dutbotlogo](http://www.dut.edu.ua/uploads/n_3680_18367509.png "dutbotlogo")
 
 ## Getting started
 
@@ -8,12 +8,12 @@ You can come across bot with username:
 ```
 Username: @DuttyBot
 ```
-If you are following PC, use [link](http://telegram.me/duttybot).
+If you following PC, use [link](http://telegram.me/duttybot).
 
 ## Interface and functions
 * Main menu:
 
-![mainmenu](http://s018.radikal.ru/i516/1611/ea/afda255afa2c.png "mainmenu")
+![mainmenu](http://s017.radikal.ru/i442/1611/9b/f45a2874a67e.png "mainmenu")
 
 * Choose a faculty:
 
@@ -29,4 +29,4 @@ If you are following PC, use [link](http://telegram.me/duttybot).
 
 * Take some schedule, that you want:
 
-![schedule](http://s017.radikal.ru/i409/1611/62/7acb5b555a06.png "schedule")
+![schedule](http://s019.radikal.ru/i644/1611/b8/31a1d61d9265.png "schedule")
