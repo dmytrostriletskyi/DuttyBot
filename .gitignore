@@ -91,4 +91,8 @@ ENV/
 # Rope project settings
 .ropeproject
 
+<<<<<<< HEAD
 .idea/additional_data.py
+=======
+.idea/
+>>>>>>> c508787de3d0b3fe70fac9a58aa2d2e95ebd9c84
