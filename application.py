@@ -74,7 +74,7 @@ def handle_text(message):
                      '6 курс' == mess.text or '7 курс' == mess.text, content_types=['text'])
 def handle_text(message):
     UserPosition(database_url).set_course_position(str(message.chat.id), message.text[:1])
-    faculty, course = UserPosition(database_url).get_faculty_and_group(str(message.chat.id))
+    faculty, course = UserPosition(database_url).get_faculty_and_course(str(message.chat.id))
     groups_list = Timetable(database_url).get_all_groups(faculty, course)
     groups_list.sort()
     keyboard.group_list_by_faculty_and_group(groups_list, message)
@@ -178,7 +178,7 @@ def handle_text(message):
 
     if user_position == 4:
         UserPosition(database_url).cancel_group(str(message.chat.id))
-        faculty, course = UserPosition(database_url).get_faculty_and_group(str(message.chat.id))
+        faculty, course = UserPosition(database_url).get_faculty_and_course(str(message.chat.id))
         groups_list = Timetable(database_url).get_all_groups(faculty, course)
         groups_list.sort()
         keyboard.group_list_by_faculty_and_group(groups_list, message)
